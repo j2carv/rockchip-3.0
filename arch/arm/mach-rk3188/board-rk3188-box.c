@@ -980,16 +980,16 @@ static struct rfkill_rk_platform_data rfkill_rk_platdata = {
     .type               = RFKILL_TYPE_BLUETOOTH,
 
     .poweron_gpio       = { // BT_REG_ON
-        .io             = RK30_PIN3_PC7, //RK30_PIN3_PC7,
+        .io             = RK30_PIN3_PD1, //RK30_PIN3_PC7,
         .enable         = GPIO_HIGH,
         .iomux          = {
             .name       = "bt_poweron",
-            .fgpio      = GPIO3_C7,
+            .fgpio      = GPIO3_D1,
         },
     },
 
     .reset_gpio         = { // BT_RST
-        .io             = RK30_PIN3_PD1, // set io to INVALID_GPIO for disable it
+        .io             = INVALID_GPIO, // set io to INVALID_GPIO for disable it
         .enable         = GPIO_LOW,
         .iomux          = {
             .name       = "bt_reset",
@@ -998,17 +998,17 @@ static struct rfkill_rk_platform_data rfkill_rk_platdata = {
     },
 
     .wake_gpio          = { // BT_WAKE, use to control bt's sleep and wakeup
-        .io             = RK30_PIN3_PC6, // set io to INVALID_GPIO for disable it
+        .io             = RK30_PIN3_PC7, // set io to INVALID_GPIO for disable it
         .enable         = GPIO_HIGH,
         .iomux          = {
             .name       = "bt_wake",
-            .fgpio      = GPIO3_C6,
+            .fgpio      = GPIO3_C7,
         },
     },
 
     .wake_host_irq      = { // BT_HOST_WAKE, for bt wakeup host when it is in deep sleep
         .gpio           = {
-            .io         = RK30_PIN3_PD2, // set io to INVALID_GPIO for disable it
+            .io         = RK30_PIN3_PC6, // set io to INVALID_GPIO for disable it
             .enable     = GPIO_LOW,      // set GPIO_LOW for falling, set 0 for rising
             .iomux      = {
                 .name   = NULL,
@@ -1995,18 +1995,17 @@ static void rk30_pm_power_off(void)
 #if defined(CONFIG_REGULATOR_ACT8846)
        if (pmic_is_act8846()) {
                printk("enter dcdet===========\n");
-               if(gpio_get_value (RK30_PIN0_PB2) == GPIO_LOW)
+               /*if(gpio_get_value (RK30_PIN0_PB2) == GPIO_LOW)
                {
                        printk("enter restart===========\n");
                        arm_pm_restart(0, NULL);
                }
-		/** code here may cause tablet cannot boot when shutdown without charger pluged in
+		* code here may cause tablet cannot boot when shutdown without charger pluged in
 		  * and then plug in charger. -- Cody Xie
-               else
-		{
+               else*/
+		//{
 			act8846_device_shutdown();
-		}
-		  */
+		//}
        }
 #endif
 	gpio_direction_output(POWER_ON_PIN, GPIO_LOW);
@@ -2110,8 +2109,12 @@ static struct cpufreq_frequency_table dvfs_gpu_table[] = {
 static struct cpufreq_frequency_table dvfs_ddr_table[] = {
 	//{.frequency = 200 * 1000 + DDR_FREQ_SUSPEND,    .index = 950 * 1000},
 	{.frequency = 300 * 1000 + DDR_FREQ_VIDEO,      .index = 1000 * 1000},
+#if 0
 	{.frequency = 400 * 1000 + DDR_FREQ_NORMAL,     .index = 1100 * 1000},
 	{.frequency = 600 * 1000 + DDR_FREQ_NORMAL,     .index = 1250 * 1000},
+#else
+	{.frequency = 360 * 1000 + DDR_FREQ_NORMAL,     .index = 1100 * 1000},
+#endif
 	{.frequency = CPUFREQ_TABLE_END},
 };
 static struct cpufreq_frequency_table dvfs_ddr_table_t[] = {

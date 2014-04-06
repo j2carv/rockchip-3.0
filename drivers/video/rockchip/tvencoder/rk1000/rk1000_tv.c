@@ -283,6 +283,7 @@ static int rk1000_tv_control_probe(struct i2c_client *client,const struct i2c_de
     	dev_err(&client->dev, "rk1000_tv_control probe error %d\n", rc);
     	return -EINVAL;
     }
+    
 #ifdef CONFIG_RK1000_TVOUT_YPbPr
 	rk1000_register_display_YPbPr(&client->dev);
 #endif
@@ -309,6 +310,12 @@ static int rk1000_tv_control_remove(struct i2c_client *client)
 	return 0;
 }
 
+static int rk1000_tv_control_shutdown(struct i2c_client *client)
+{
+	int buffer = 0x07;
+    rk1000_tv_control_set_reg(client, 0x03, &buffer, 1);
+    return 0;
+}
 
 static const struct i2c_device_id rk1000_tv_control_id[] = {
 	{ DRV_NAME, 0 },
@@ -323,6 +330,7 @@ static struct i2c_driver rk1000_tv_control_driver = {
 	.id_table = rk1000_tv_control_id,
 	.probe = rk1000_tv_control_probe,
 	.remove = rk1000_tv_control_remove,
+	.shutdown = rk1000_tv_control_shutdown,
 };
 
 static int __init rk1000_tv_init(void)

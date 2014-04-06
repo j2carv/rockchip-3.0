@@ -1,4 +1,3 @@
-//$_FOR_ROCKCHIP_RBOX_$
 /* ==========================================================================
  * $File: //dwh/usb_iip/dev/software/otg_ipmate/linux/drivers/dwc_otg_hcd_intr.c $
  * $Revision: #7 $
@@ -36,6 +35,8 @@
 #include "dwc_otg_driver.h"
 #include "dwc_otg_hcd.h"
 #include "dwc_otg_regs.h"
+#include "usbdev_rk.h"
+
 int csplit_nak = 0;
 /** @file 
  * This file contains the implementation of the HCD Interrupt handlers. 
@@ -1077,24 +1078,26 @@ static int32_t handle_hc_xfercomp_intr(dwc_otg_hcd_t *_hcd,
 	DWC_DEBUGPL(DBG_HCD, "--Host Channel %d Interrupt: "
 		    "Transfer Complete--\n", _hc->hc_num);
 
-    if(((uint32_t) _qtd & 0xf0000000)==0){
-        DWC_PRINT("%s qtd %p\n", __func__, _qtd);
-        release_channel(_hcd, _hc, _qtd, _hc->halt_status);
-        return 1;
-    }
-    urb = _qtd->urb;
-    if(((uint32_t)urb & 0xf0000000)==0){
-        DWC_PRINT("%s qtd %p, urb %p\n", __func__, _qtd, urb);
-        release_channel(_hcd, _hc, _qtd, _hc->halt_status);
-        return 1;
-    }
+	if(((uint32_t) _qtd & 0xf0000000)==0){
+		DWC_PRINT("%s qtd %p\n", __func__, _qtd);
+		release_channel(_hcd, _hc, _qtd, _hc->halt_status);
+		return 1;
+	}
+
+	urb = _qtd->urb;
+	if(((uint32_t)urb & 0xf0000000)==0){
+		DWC_PRINT("%s qtd %p, urb %p\n", __func__, _qtd, urb);
+		release_channel(_hcd, _hc, _qtd, _hc->halt_status);
+		return 1;
+	}
+
      	/* 
 	 * Handle xfer complete on CSPLIT.
 	 */
 	if (_hc->qh->do_split) {
 		_qtd->complete_split = 0;
 	}
-	
+
 	pipe_type = usb_pipetype(urb->pipe);
 	/* Update the QTD and URB states. */
 	switch (pipe_type) {
@@ -1498,8 +1501,7 @@ static int32_t handle_hc_babble_intr(dwc_otg_hcd_t *_hcd,
 {
 	DWC_DEBUGPL(DBG_HCD, "--Host Channel %d Interrupt: "
 		    "Babble Error--\n", _hc->hc_num);
-//$_rbox_$_modify_$_huangyonglin: Maskable interrupt log,to avoid the collapse of the camera.
-    //DWC_PRINT("%s \n", __func__);
+    DWC_PRINT("%s \n", __func__);
 	if (_hc->ep_type != DWC_OTG_EP_TYPE_ISOC) {
 		dwc_otg_hcd_complete_urb(_hcd, _qtd->urb, -EOVERFLOW);
 		halt_channel(_hcd, _hc, _qtd, DWC_OTG_HC_XFER_BABBLE_ERR);
@@ -1785,6 +1787,7 @@ static void handle_hc_chhltd_intr_dma(dwc_otg_hcd_t *_hcd,
 {
 	hcint_data_t hcint;
 	hcintmsk_data_t hcintmsk;
+    struct dwc_otg_platform_data *pldata = _hcd->core_if->otg_dev->pldata;
 
 	if (_hc->halt_status == DWC_OTG_HC_XFER_URB_DEQUEUE ||
 	    _hc->halt_status == DWC_OTG_HC_XFER_AHB_ERR) {
@@ -1876,6 +1879,8 @@ static void handle_hc_chhltd_intr_dma(dwc_otg_hcd_t *_hcd,
 				  __func__, _hc->hc_num, hcint.d32,
 				  dwc_read_reg32(&_hcd->core_if->core_global_regs->gintsts));
 				clear_hc_int(_hc_regs,chhltd);
+				if(pldata->soft_reset)
+				    pldata->soft_reset();
 		}
 	}
 }
@@ -1943,7 +1948,6 @@ int32_t dwc_otg_hcd_handle_hc_n_intr (dwc_otg_hcd_t *_dwc_otg_hcd, uint32_t _num
 	if (hcint.b.chhltd) {
 		retval |= handle_hc_chhltd_intr(_dwc_otg_hcd, hc, hc_regs, qtd);
 	}
-
 	if (hcint.b.xfercomp) {
 		retval |= handle_hc_xfercomp_intr(_dwc_otg_hcd, hc, hc_regs, qtd);
 		/*

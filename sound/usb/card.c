@@ -1,5 +1,3 @@
-/*$_FOR_ROCKCHIP_RBOX_$*/
-
 /*
  *   (Tentative) USB Audio Driver for ALSA
  *

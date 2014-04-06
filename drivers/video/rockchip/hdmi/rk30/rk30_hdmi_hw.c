@@ -149,46 +149,37 @@ static void rk30_hdmi_config_phy(struct rk30_hdmi *rk30_hdmi, unsigned int tmdsc
 {
 	HDMIWrReg(DEEP_COLOR_MODE, 0x22);	// tmds frequency same as input dlck
 	rk30_hdmi_set_pwr_mode(rk30_hdmi, PWR_SAVE_MODE_B);
-	switch(tmdsclk)
-	{
-		case 148500000:
-			rk30_hdmi_config_phy_reg(rk30_hdmi, 0x158, 0x0E);
-			rk30_hdmi_config_phy_reg(rk30_hdmi, 0x15c, 0x00);
-			rk30_hdmi_config_phy_reg(rk30_hdmi, 0x160, 0x60);
-			rk30_hdmi_config_phy_reg(rk30_hdmi, 0x164, 0x00);
-			rk30_hdmi_config_phy_reg(rk30_hdmi, 0x168, 0xDA);
-			rk30_hdmi_config_phy_reg(rk30_hdmi, 0x16c, 0xA1);
-			rk30_hdmi_config_phy_reg(rk30_hdmi, 0x170, 0x0e);
-			rk30_hdmi_config_phy_reg(rk30_hdmi, 0x174, 0x22);
-			rk30_hdmi_config_phy_reg(rk30_hdmi, 0x178, 0x00);
-			break;
-			
-		case 74250000:
-			rk30_hdmi_config_phy_reg(rk30_hdmi, 0x158, 0x06);
-			rk30_hdmi_config_phy_reg(rk30_hdmi, 0x15c, 0x00);
-			rk30_hdmi_config_phy_reg(rk30_hdmi, 0x160, 0x60);
-			rk30_hdmi_config_phy_reg(rk30_hdmi, 0x164, 0x00);
-			rk30_hdmi_config_phy_reg(rk30_hdmi, 0x168, 0xCA);
-			rk30_hdmi_config_phy_reg(rk30_hdmi, 0x16c, 0xA3);
-			rk30_hdmi_config_phy_reg(rk30_hdmi, 0x170, 0x0e);
-			rk30_hdmi_config_phy_reg(rk30_hdmi, 0x174, 0x20);
-			rk30_hdmi_config_phy_reg(rk30_hdmi, 0x178, 0x00);
-			break;
-			
-		case 27000000:
-			rk30_hdmi_config_phy_reg(rk30_hdmi, 0x158, 0x02);
-			rk30_hdmi_config_phy_reg(rk30_hdmi, 0x15c, 0x00);
-			rk30_hdmi_config_phy_reg(rk30_hdmi, 0x160, 0x60);
-			rk30_hdmi_config_phy_reg(rk30_hdmi, 0x164, 0x00);
-			rk30_hdmi_config_phy_reg(rk30_hdmi, 0x168, 0xC2);
-			rk30_hdmi_config_phy_reg(rk30_hdmi, 0x16c, 0xA2);
-			rk30_hdmi_config_phy_reg(rk30_hdmi, 0x170, 0x0e);
-			rk30_hdmi_config_phy_reg(rk30_hdmi, 0x174, 0x20);
-			rk30_hdmi_config_phy_reg(rk30_hdmi, 0x178, 0x00);
-			break;
-		default:
-			printk(KERN_ERR "%s not support such tmds clk %d\n", __FUNCTION__, tmdsclk);
-			break;
+	if(tmdsclk > 100000000) {
+		rk30_hdmi_config_phy_reg(rk30_hdmi, 0x158, 0x0E);
+		rk30_hdmi_config_phy_reg(rk30_hdmi, 0x15c, 0x00);
+		rk30_hdmi_config_phy_reg(rk30_hdmi, 0x160, 0x60);
+		rk30_hdmi_config_phy_reg(rk30_hdmi, 0x164, 0x00);
+		rk30_hdmi_config_phy_reg(rk30_hdmi, 0x168, 0xDA);
+		rk30_hdmi_config_phy_reg(rk30_hdmi, 0x16c, 0xA1);
+		rk30_hdmi_config_phy_reg(rk30_hdmi, 0x170, 0x0e);
+		rk30_hdmi_config_phy_reg(rk30_hdmi, 0x174, 0x22);
+		rk30_hdmi_config_phy_reg(rk30_hdmi, 0x178, 0x00);
+	}else if(tmdsclk > 50000000) {
+		rk30_hdmi_config_phy_reg(rk30_hdmi, 0x158, 0x06);
+		rk30_hdmi_config_phy_reg(rk30_hdmi, 0x15c, 0x00);
+		rk30_hdmi_config_phy_reg(rk30_hdmi, 0x160, 0x60);
+		rk30_hdmi_config_phy_reg(rk30_hdmi, 0x164, 0x00);
+		rk30_hdmi_config_phy_reg(rk30_hdmi, 0x168, 0xCA);
+		rk30_hdmi_config_phy_reg(rk30_hdmi, 0x16c, 0xA3);
+		rk30_hdmi_config_phy_reg(rk30_hdmi, 0x170, 0x0e);
+		rk30_hdmi_config_phy_reg(rk30_hdmi, 0x174, 0x20);
+		rk30_hdmi_config_phy_reg(rk30_hdmi, 0x178, 0x00);
+	}
+	else {			
+		rk30_hdmi_config_phy_reg(rk30_hdmi, 0x158, 0x02);
+		rk30_hdmi_config_phy_reg(rk30_hdmi, 0x15c, 0x00);
+		rk30_hdmi_config_phy_reg(rk30_hdmi, 0x160, 0x60);
+		rk30_hdmi_config_phy_reg(rk30_hdmi, 0x164, 0x00);
+		rk30_hdmi_config_phy_reg(rk30_hdmi, 0x168, 0xC2);
+		rk30_hdmi_config_phy_reg(rk30_hdmi, 0x16c, 0xA2);
+		rk30_hdmi_config_phy_reg(rk30_hdmi, 0x170, 0x0e);
+		rk30_hdmi_config_phy_reg(rk30_hdmi, 0x174, 0x20);
+		rk30_hdmi_config_phy_reg(rk30_hdmi, 0x178, 0x00);
 	}
 }
 
@@ -302,7 +293,7 @@ static void rk30_hdmi_config_avi(struct rk30_hdmi *rk30_hdmi, unsigned char vic,
 			clolorimetry = AVI_COLORIMETRY_ITU709;
 	}
 
-	if(color_output == HDMI_COLOR_RGB)
+	if(color_output == HDMI_COLOR_RGB_0_255 || color_output == HDMI_COLOR_RGB_16_235)
 		clolorimetry = AVI_COLORIMETRY_NO_DATA;
 	
 	info[5] = (clolorimetry << 6) | (aspect_ratio << 4) | ACTIVE_ASPECT_RATE_SAME_AS_CODED_FRAME;
@@ -324,14 +315,14 @@ static void rk30_hdmi_config_avi(struct rk30_hdmi *rk30_hdmi, unsigned char vic,
 static char coeff_csc[][24] = {
 		//G			B			R			Bias
 	{	//CSC_RGB_0_255_TO_ITU601_16_235
-		0x11, 0xb6, 0x02, 0x0b, 0x10, 0x55, 0x00, 0x80, 	//Cr
-		0x02, 0x59, 0x01, 0x32, 0x00, 0x75, 0x00, 0x10, 	//Y
-		0x11, 0x5b, 0x10, 0xb0, 0x02, 0x0b, 0x00, 0x80, 	//Cb
+		0x11, 0x2a, 0x01, 0xc2, 0x10, 0x98, 0x00, 0x80,     //Cb
+		0x02, 0x04, 0x00, 0x64, 0x01, 0x07, 0x00, 0x10, 	//Y
+		0x11, 0x79, 0x10, 0x49, 0x01, 0xc2, 0x00, 0x80,  	//Cr
 	},
 	{	//CSC_RGB_0_255_TO_ITU709_16_235
-		0x11, 0xdb, 0x02, 0x0b, 0x10, 0x30, 0x00, 0x80,		//Cr
-		0x02, 0xdc, 0x00, 0xda, 0x00, 0x4a, 0x00, 0x10, 	//Y
-		0x11, 0x93, 0x10, 0x78, 0x02, 0x0b, 0x00, 0x80, 	//Cb
+		0x11, 0x5b, 0x01, 0xc2, 0x10, 0x67, 0x00, 0x80,		//Cb
+		0x02, 0x75, 0x00, 0x3f, 0x00, 0xbb, 0x00, 0x10, 	//Y
+		0x11, 0x98, 0x10, 0x29, 0x01, 0xc2, 0x00, 0x80, 	//Cr
 	},
 		//Y			Cr			Cb			Bias
 	{	//CSC_ITU601_16_235_TO_RGB_16_235
@@ -354,7 +345,13 @@ static char coeff_csc[][24] = {
 		0x04, 0xa8, 0x11, 0xd6, 0x10, 0xbb, 0x00, 0x40, 	//G
 		0x04, 0xa8, 0x00, 0x00, 0x07, 0x44, 0x02, 0xfb, 	//B
 	},
-	
+	{
+		//CSC_RGB_0_255_TO_RGB_16_235
+	    //R     	G      		B
+		0x00, 0x00, 0x03, 0x6f, 0x00, 0x00, 0x00, 0x10,		//G
+		0x03, 0x6f, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10, 	//R
+		0x00, 0x00, 0x00, 0x00, 0x03, 0x6f, 0x00, 0x10, 	//B
+	}	
 };
 
 static void rk30_hdmi_config_csc(struct rk30_hdmi *rk30_hdmi, struct hdmi_video *vpara)
@@ -362,38 +359,39 @@ static void rk30_hdmi_config_csc(struct rk30_hdmi *rk30_hdmi, struct hdmi_video 
 	int i, mode;
 	char *coeff = NULL;
 		
-	if( ((vpara->color_input == HDMI_COLOR_RGB) && (vpara->color_output == HDMI_COLOR_RGB)) ||
-		((vpara->color_input != HDMI_COLOR_RGB) && (vpara->color_output != HDMI_COLOR_RGB) ))
-	{
+	if(vpara->color_input == vpara->color_output)
 		return;
-	}
-	switch(vpara->vic)
-	{
-		case HDMI_720x480i_60HZ_4_3:
-		case HDMI_720x576i_50HZ_4_3:
-		case HDMI_720x480p_60HZ_4_3:
-		case HDMI_720x576p_50HZ_4_3:
-		case HDMI_720x480i_60HZ_16_9:
-		case HDMI_720x576i_50HZ_16_9:
-		case HDMI_720x480p_60HZ_16_9:
-		case HDMI_720x576p_50HZ_16_9:
-			if(vpara->color_input == HDMI_COLOR_RGB)
-				mode = CSC_RGB_0_255_TO_ITU601_16_235;
-			else if(vpara->sink_hdmi == OUTPUT_HDMI)
-				mode = CSC_ITU601_16_235_TO_RGB_16_235;
-			else
-				mode = CSC_ITU601_16_235_TO_RGB_0_255;
-			break;
-		default:
-			if(vpara->color_input == HDMI_COLOR_RGB)
-				mode = CSC_RGB_0_255_TO_ITU709_16_235;
-			else if(vpara->sink_hdmi == OUTPUT_HDMI)
-				mode = CSC_ITU709_16_235_TO_RGB_16_235;
-			else
-				mode = CSC_ITU709_16_235_TO_RGB_0_255;
-			break;
-	}
 	
+	if(vpara->color_input == HDMI_COLOR_RGB_0_255 && vpara->color_output == HDMI_COLOR_RGB_16_235)
+		mode = CSC_RGB_0_255_TO_RGB_16_235;
+	else {
+		switch(vpara->vic)
+		{
+			case HDMI_720x480i_60HZ_4_3:
+			case HDMI_720x576i_50HZ_4_3:
+			case HDMI_720x480p_60HZ_4_3:
+			case HDMI_720x576p_50HZ_4_3:
+			case HDMI_720x480i_60HZ_16_9:
+			case HDMI_720x576i_50HZ_16_9:
+			case HDMI_720x480p_60HZ_16_9:
+			case HDMI_720x576p_50HZ_16_9:
+				if(vpara->color_input == HDMI_COLOR_RGB_0_255)
+					mode = CSC_RGB_0_255_TO_ITU601_16_235;
+				else if(vpara->sink_hdmi == OUTPUT_HDMI)
+					mode = CSC_ITU601_16_235_TO_RGB_16_235;
+				else
+					mode = CSC_ITU601_16_235_TO_RGB_0_255;
+				break;
+			default:
+				if(vpara->color_input == HDMI_COLOR_RGB_0_255)
+					mode = CSC_RGB_0_255_TO_ITU709_16_235;
+				else if(vpara->sink_hdmi == OUTPUT_HDMI)
+					mode = CSC_ITU709_16_235_TO_RGB_16_235;
+				else
+					mode = CSC_ITU709_16_235_TO_RGB_0_255;
+				break;
+		}
+	}
 	coeff = coeff_csc[mode];
 	
 	HDMIWrReg(CSC_CONFIG1, v_CSC_MODE(CSC_MODE_MANUAL) | v_CSC_BRSWAP_DIABLE(1));
@@ -407,7 +405,7 @@ static void rk30_hdmi_config_csc(struct rk30_hdmi *rk30_hdmi, struct hdmi_video 
 int rk30_hdmi_config_video(struct hdmi *hdmi, struct hdmi_video *vpara)
 {
 	struct rk30_hdmi *rk30_hdmi = hdmi->property->priv;
-	int value, vsync_offset;
+	int value, vsync_offset, outputmode, inputmode;
 	struct fb_videomode *mode;
 	
 	RK30DBG( "[%s]\n", __FUNCTION__);
@@ -424,11 +422,23 @@ int rk30_hdmi_config_video(struct hdmi *hdmi, struct hdmi_video *vpara)
 		hdmi->ops->hdcp_power_off_cb();
 	
 	HDMIWrReg(CONTROL_PACKET_AUTO_SEND, 0x00);
+
+	if(vpara->color_output == HDMI_COLOR_YCbCr444)
+		outputmode = VIDEO_OUTPUT_YCBCR444;
+	else if(vpara->color_output == HDMI_COLOR_YCbCr422)
+		outputmode = VIDEO_OUTPUT_YCBCR422;
+	else
+		outputmode = VIDEO_OUTPUT_RGB444;
 	
+	if(vpara->color_input == HDMI_COLOR_YCbCr444 || vpara->color_input == HDMI_COLOR_YCbCr422)
+		inputmode = VIDEO_INPUT_COLOR_YCBCR;
+	else
+		inputmode = VIDEO_INPUT_COLOR_RGB;
+		
 	// Input video mode is RGB24bit, Data enable signal from external
 	HDMIMskReg(value, AV_CTRL1,  m_DE_SIGNAL_SELECT, EXTERNAL_DE)	
 	HDMIMskReg(value, VIDEO_CTRL1, m_VIDEO_OUTPUT_MODE | m_VIDEO_INPUT_DEPTH | m_VIDEO_INPUT_COLOR_MODE, \
-		v_VIDEO_OUTPUT_MODE(vpara->color_output) | v_VIDEO_INPUT_DEPTH(VIDEO_INPUT_DEPTH_8BIT) | vpara->color_input)
+		v_VIDEO_OUTPUT_MODE(outputmode) | v_VIDEO_INPUT_DEPTH(VIDEO_INPUT_DEPTH_8BIT) | inputmode)
 	HDMIWrReg(DEEP_COLOR_MODE, 0x20);
 	// color space convert
 	rk30_hdmi_config_csc(rk30_hdmi, vpara);
@@ -515,7 +525,7 @@ static void rk30_hdmi_config_aai(struct rk30_hdmi *rk30_hdmi, unsigned char chan
 
 	info[4] = channel;
 	if(5 == channel)
-        info[7] = 0x0b;
+		info[7] = 0x0b;
 	info[3] = info[0] + info[1] + info[2];	
 	for (i = 4; i < SIZE_AUDIO_INFOFRAME; i++)
     	info[3] += info[i];
@@ -532,7 +542,7 @@ static void rk30_hdmi_audio_reset(struct rk30_hdmi *rk30_hdmi)
        int value;
        
        HDMIMskReg(value, VIDEO_SETTING2, m_AUDIO_RESET, AUDIO_CAPTURE_RESET)
-       msleep(1);
+       udelay(100);
        HDMIMskReg(value, VIDEO_SETTING2, m_AUDIO_RESET, 0)
 }
 
@@ -609,7 +619,7 @@ int rk30_hdmi_config_audio(struct hdmi *hdmi, struct hdmi_audio *audio)
 	HDMIWrReg(I2S_AUDIO_CTRL, v_I2S_MODE(I2S_MODE_STANDARD) | v_I2S_CHANNEL(channel) );	
 	HDMIWrReg(I2S_INPUT_SWAP, 0x00); //no swap
 	HDMIMskReg(value, AV_CTRL1, m_AUDIO_SAMPLE_RATE, v_AUDIO_SAMPLE_RATE(rate))	
-//	HDMIWrReg(SRC_NUM_AUDIO_LEN, word_length);
+	//HDMIWrReg(SRC_NUM_AUDIO_LEN, word_length);
 		
     //Set N value 6144, fs=48kHz
     HDMIWrReg(N_1, N & 0xFF);
@@ -726,9 +736,9 @@ irqreturn_t hdmi_irq(int irq, void *priv)
 		interrupt3 = HDMIRdReg(INTR_STATUS3);
 		interrupt4 = HDMIRdReg(INTR_STATUS4);
 		HDMIWrReg(INTR_STATUS1, interrupt1);
-		HDMIWrReg(INTR_STATUS2, interrupt2);
-		HDMIWrReg(INTR_STATUS3, interrupt3);
-		HDMIWrReg(INTR_STATUS4, interrupt4);
+//		HDMIWrReg(INTR_STATUS2, interrupt2);
+//		HDMIWrReg(INTR_STATUS3, interrupt3);
+//		HDMIWrReg(INTR_STATUS4, interrupt4);
 #if 0
 		RK30DBG( "[%s] interrupt1 %02x interrupt2 %02x interrupt3 %02x interrupt4 %02x\n",\
 			 __FUNCTION__, interrupt1, interrupt2, interrupt3, interrupt4);
@@ -750,7 +760,7 @@ irqreturn_t hdmi_irq(int irq, void *priv)
 //			HDMIWrReg(SYS_CTRL, 0x10);
 //			rk30_hdmi->pwr_mode = PWR_SAVE_MODE_A;
 //		}
-		if(interrupt2 && hdmi->ops->hdcp_irq_cb)
+		if(hdmi->ops->hdcp_irq_cb)
 			hdmi->ops->hdcp_irq_cb(interrupt2);
 	}
 	return IRQ_HANDLED;

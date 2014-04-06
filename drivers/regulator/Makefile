@@ -39,6 +39,7 @@ obj-$(CONFIG_RK2818_REGULATOR_LP8725) += rk2818_lp8725.o
 obj-$(CONFIG_RK2818_REGULATOR_CHARGE) += charge-regulator.o
 obj-$(CONFIG_RK29_PWM_REGULATOR) += rk29-pwm-regulator.o
 obj-$(CONFIG_RK30_PWM_REGULATOR) += rk30-pwm-regulator.o
+obj-$(CONFIG_RK30_PWM_REGULATOR_ARM_LOGIC) += rk30-pwm-regulator.o
 
 
 obj-$(CONFIG_REGULATOR_TPS65023) += tps65023-regulator.o
@@ -53,5 +54,7 @@ obj-$(CONFIG_REGULATOR_TPS65912) += tps65912-regulator.o
 obj-$(CONFIG_REGULATOR_ACT8891) += act8891.o
 obj-$(CONFIG_REGULATOR_ACT8931) += act8931.o
 obj-$(CONFIG_REGULATOR_ACT8846) += act8846.o
+obj-$(CONFIG_REGULATOR_RICOH619) += ricoh619-regulator.o
+obj-$(CONFIG_REGULATOR_RT5025)	+= rt5025-regulator.o
 
 ccflags-$(CONFIG_REGULATOR_DEBUG) += -DDEBUG

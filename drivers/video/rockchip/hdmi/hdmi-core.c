@@ -77,19 +77,19 @@ static void hdmi_wq_set_video(struct hdmi *hdmi)
 	
 	hdmi_set_lcdc(hdmi);
 	video.vic = hdmi->vic;
-	video.color_input = HDMI_COLOR_RGB;
+	video.color_input = HDMI_COLOR_RGB_0_255;
 	video.sink_hdmi = hdmi->edid.sink_hdmi;
 	video.format_3d = hdmi->mode_3d;
 	// For DVI, output RGB
 	if(hdmi->edid.sink_hdmi == 0)
-		video.color_output = HDMI_COLOR_RGB;
+		video.color_output = HDMI_COLOR_RGB_0_255;
 	else {
 //		if(hdmi->edid.ycbcr444)
 //			video.color_output = HDMI_COLOR_YCbCr444;
 //		else if(hdmi->edid.ycbcr422)
 //			video.color_output = HDMI_COLOR_YCbCr422;
 //		else
-			video.color_output = HDMI_COLOR_RGB;
+			video.color_output = HDMI_COLOR_RGB_16_235;
 	}
 	if(hdmi->ops->setVideo)
 		hdmi->ops->setVideo(hdmi, &video);
@@ -440,7 +440,7 @@ int hdmi_config_audio(struct hdmi_audio	*audio)
 	struct hdmi *hdmi;
 	if(audio == NULL)
 		return HDMI_ERROR_FALSE;
-	//printk(KERN_ERR "hdmi_config_audio\n");	
+        //printk(KERN_ERR "hdmi_config_audio\n");	
 	for(i = 0; i < HDMI_MAX_ID; i++)
 	{
 		if(ref_info[i].ref ==0)
@@ -449,11 +449,11 @@ int hdmi_config_audio(struct hdmi_audio	*audio)
 
 		//printk(KERN_ERR "eenable %d, sleep %d\n", hdmi->enable, hdmi->sleep);
 		// Same as current audio setting, return.
-		if(memcmp(audio, &hdmi->audio, sizeof(struct hdmi_audio)) == 0){
-			//printk("same setting, return.\n");
+		//Warning: rk30 hdmi bug: fixed hdmi noise, another workaround is keeping i2s always on.
+		#if 1
+		if(memcmp(audio, &hdmi->audio, sizeof(struct hdmi_audio)) == 0)
 			continue;
-		}
-
+		#endif
 		/*for(j = 0; j < hdmi->edid.audio_num; j++)
 		{
 			if(audio->type == hdmi->edid.audio_num)

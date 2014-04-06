@@ -45,13 +45,7 @@ static int rk1000_control_probe(struct i2c_client *client,
 	
     printk("rk1000_control_probe\n");
     
-    #if defined(CONFIG_SND_RK29_SOC_I2S_8CH)        
-	iis_clk = clk_get_sys("rk29_i2s.0", "i2s");
-	#elif defined(CONFIG_SND_RK29_SOC_I2S_2CH)
-	iis_clk = clk_get_sys("rk29_i2s.1", "i2s");
-	#else
-	iis_clk = clk_get_sys("rk29_i2s.2", "i2s");
-	#endif
+    iis_clk = clk_get_sys("rk29_i2s.0", "i2s");
 	if (IS_ERR(iis_clk)) {
 		printk("failed to get i2s clk\n");
 		ret = PTR_ERR(iis_clk);
@@ -62,15 +56,25 @@ static int rk1000_control_probe(struct i2c_client *client,
 		#if defined(CONFIG_ARCH_RK29)
 		rk29_mux_api_set(GPIO2D0_I2S0CLK_MIIRXCLKIN_NAME, GPIO2H_I2S0_CLK);
 		#elif defined(CONFIG_ARCH_RK30)
-        rk30_mux_api_set(GPIO0B0_I2S8CHCLK_NAME, GPIO0B_I2S_8CH_CLK);
-        #elif defined(CONFIG_ARCH_RK3066B)||defined(CONFIG_ARCH_RK3188)
-		iomux_set(I2S0_CLK);
+		rk30_mux_api_set(GPIO0B0_I2S8CHCLK_NAME, GPIO0B_I2S_8CH_CLK);
+		#else
+		iomux_set(I2S0_MCLK);
 		#endif
 		clk_put(iis_clk);
 	}
     
     if(client->dev.platform_data) {
 		tv_data = client->dev.platform_data;
+		if(tv_data->io_pwr_pin != INVALID_GPIO) {
+	    	ret = gpio_request(tv_data->io_pwr_pin, "rk1000 pwr");
+		    if (ret){   
+		        printk("rk1000_control_probe request pwr gpio fail\n");
+		        //goto err1;
+		    }
+		    
+		    gpio_set_value(tv_data->io_pwr_pin, GPIO_HIGH);
+			gpio_free(tv_data->io_pwr_pin);
+		}
 		if(tv_data->io_reset_pin != INVALID_GPIO) {
 	    	ret = gpio_request(tv_data->io_reset_pin, "rk1000 reset");
 		    if (ret){   

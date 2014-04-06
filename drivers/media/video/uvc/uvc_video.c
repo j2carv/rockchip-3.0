@@ -523,6 +523,7 @@ static void uvc_video_decode_data(struct uvc_streaming *stream,
 	if (len > maxlen) {
 		uvc_trace(UVC_TRACE_FRAME, "Frame complete (overflow).\n");
 		buf->state = UVC_BUF_STATE_READY;
+		buf->error = 1;
 	}
 }
 
@@ -751,7 +752,7 @@ static void uvc_video_complete_fun (struct urb *urb)
 	unsigned long flags;
 	int ret;
 	int i;
-	atomic_t *urb_state;
+	atomic_t *urb_state=NULL;
 
 	switch (urb->status) {
 	case 0:
@@ -777,6 +778,12 @@ static void uvc_video_complete_fun (struct urb *urb)
             break;
         }
     }
+
+    if (urb_state == NULL) {
+        printk("urb(%p) cann't be finded in stream->urb(%p, %p, %p, %p, %p)\n",
+              urb,stream->urb[0],stream->urb[1],stream->urb[2],stream->urb[3],stream->urb[4]);
+        BUG();
+    }
 	
 	if (atomic_read(urb_state)==UrbDeactive) {
 	    printk(KERN_DEBUG "urb is deactive, this urb complete cancel!");
@@ -788,9 +795,10 @@ static void uvc_video_complete_fun (struct urb *urb)
 	if (!list_empty(&queue->irqqueue))
 		buf = list_first_entry(&queue->irqqueue, struct uvc_buffer,
 				       queue);
+    spin_unlock_irqrestore(&queue->irqlock, flags);	
+    
 	stream->decode(urb, stream, buf);
-	spin_unlock_irqrestore(&queue->irqlock, flags);
-
+	
 	if ((ret = usb_submit_urb(urb, GFP_ATOMIC)) < 0) {
 		uvc_printk(KERN_ERR, "Failed to resubmit video URB (%d).\n",
 			ret);
@@ -798,10 +806,7 @@ static void uvc_video_complete_fun (struct urb *urb)
 }
 static void uvc_video_complete_tasklet(unsigned long data)
 {
-    struct urb *urb = (struct urb*)data;
-    struct uvc_streaming *stream = urb->context;
-    struct tasklet_struct *tasklet = NULL;
-    int i;
+    struct urb *urb = (struct urb*)data;   
     
     uvc_video_complete_fun(urb);    
     
@@ -921,8 +926,8 @@ static void uvc_uninit_video(struct uvc_streaming *stream, int free_buffers)
             kfree(stream->tasklet[i]);
             stream->tasklet[i] = NULL;
         }
-        
-        usb_kill_urb(urb); 
+
+		usb_kill_urb(urb);
 		usb_free_urb(urb);
 		stream->urb[i] = NULL;
         

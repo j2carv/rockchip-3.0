@@ -1104,7 +1104,9 @@ netdev_tx_t usbnet_start_xmit (struct sk_buff *skb,
 		}
 	}
 	
-
+//$_rbox_$_modify_$_chenzhi
+//$_rbox_$_modify_$_begin
+/* data must be 4-byte aligned */
         length = ((unsigned long)skb->data) & 0x3;
         if (length) {
                 if (skb_cloned(skb) ||
@@ -1124,7 +1126,7 @@ netdev_tx_t usbnet_start_xmit (struct sk_buff *skb,
                         skb_reserve(skb, length);
                 }
         }
-
+//$_rbox_$_modify_$_end	
 	length = skb->len;
 
 	if (!(urb = usb_alloc_urb (0, GFP_ATOMIC))) {
@@ -1449,7 +1451,17 @@ usbnet_probe (struct usb_interface *udev, const struct usb_device_id *prod)
 		if ((dev->driver_info->flags & FLAG_ETHER) != 0 &&
 		    ((dev->driver_info->flags & FLAG_POINTTOPOINT) == 0 ||
 		     (net->dev_addr [0] & 0x02) == 0))
+		{
+			if((le16_to_cpu(xdev->descriptor.idVendor) == 0x258d) && (le16_to_cpu(xdev->descriptor.idProduct) == 0x2000)){
+			strcpy (net->name, "lte%d");
+			}else if((le16_to_cpu(xdev->descriptor.idVendor) == 0x258d) && (le16_to_cpu(xdev->descriptor.idProduct) == 0x1101)){
+			strcpy (net->name, "lte%d");
+			}else if((le16_to_cpu(xdev->descriptor.idVendor) == 0x216f) && (le16_to_cpu(xdev->descriptor.idProduct) == 0x0043)){
+			strcpy (net->name, "lte%d");
+			}else{
 			strcpy (net->name, "eth%d");
+			}
+		}
 		/* WLAN devices should always be named "wlan%d" */
 		if ((dev->driver_info->flags & FLAG_WLAN) != 0)
 			strcpy(net->name, "wlan%d");

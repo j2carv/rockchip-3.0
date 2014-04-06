@@ -110,7 +110,8 @@ enum {
 
 // HDMI Video Data Color Mode
 enum hdmi_video_color_mode {
-	HDMI_COLOR_RGB = 0,
+	HDMI_COLOR_RGB_0_255 = 0,
+	HDMI_COLOR_RGB_16_235,
 	HDMI_COLOR_YCbCr444,
 	HDMI_COLOR_YCbCr422,
 };
@@ -342,6 +343,7 @@ extern int hdmi_ouputmode_select(struct hdmi *hdmi, int edid_ok);
 extern int hdmi_add_vic(int vic, struct list_head *head);
 extern int hdmi_videomode_to_vic(struct fb_videomode *vmode);
 extern const struct fb_videomode* hdmi_vic_to_videomode(int vic);
+extern const struct hdmi_video_timing* hdmi_vic2timing(int vic);
 extern int hdmi_config_audio(struct hdmi_audio	*audio);
 
 #endif

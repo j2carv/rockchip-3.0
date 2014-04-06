@@ -1,7 +1,5 @@
-/* $_FOR_ROCKCHIP_RBOX_$ */
 #ifndef _LINUX_DISPLAY_RK_H
 #define _LINUX_DISPLAY_RK_H
-//$_rbox_$_modify_$_zhengyang modify
 #include <linux/device.h>
 #include <linux/fb.h>
 #include <linux/list.h>
@@ -108,4 +106,3 @@ extern void rk_display_device_select(int property, int priority);
 #define to_rk_display_device(obj) container_of(obj, struct rk_display_device, class_dev)
 
 #endif
-//$_rbox_$_modify_$end

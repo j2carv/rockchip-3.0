@@ -483,7 +483,7 @@ void act8846_device_resume(void)
 	udelay(100);
 
 	dcdc =regulator_get(NULL, "act_dcdc4");
-	regulator_set_voltage(dcdc, 3300000, 3300000);
+	regulator_set_voltage(dcdc, 3000000, 3000000);
 	regulator_put(dcdc);
 	udelay(100);
 	
@@ -517,14 +517,17 @@ void __sramfunc board_pmu_act8846_resume(void)
 void __sramfunc board_act8846_set_suspend_vol(void)
 {	
 #ifdef CONFIG_ACT8846_SUPPORT_RESET
+	if(pmic_is_act8846()){
 	sram_gpio_set_value(pmic_vsel, GPIO_HIGH); 
+	}
 #endif
 }
 void __sramfunc board_act8846_set_resume_vol(void)
 {
 #ifdef CONFIG_ACT8846_SUPPORT_RESET
+	if(pmic_is_act8846()){
 	sram_gpio_set_value(pmic_vsel, GPIO_LOW);  
-	sram_32k_udelay(1000);
+	}
 #endif
 }
 

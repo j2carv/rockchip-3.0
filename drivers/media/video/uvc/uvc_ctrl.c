@@ -908,7 +908,7 @@ int uvc_query_v4l2_ctrl(struct uvc_video_chain *chain,
 		ret = -EINVAL;
 		goto done;
 	}
-    
+
 	memset(v4l2_ctrl, 0, sizeof *v4l2_ctrl);
 	v4l2_ctrl->id = mapping->id;
 	v4l2_ctrl->type = mapping->v4l2_type;

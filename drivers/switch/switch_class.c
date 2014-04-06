@@ -1,4 +1,3 @@
-/*$_FOR_ROCKCHIP_RBOX_$*/
 
 /*
  *  drivers/switch/switch_class.c
@@ -56,7 +55,6 @@ static ssize_t name_show(struct device *dev, struct device_attribute *attr,
 	}
 	return sprintf(buf, "%s\n", sdev->name);
 }
-/*$_rbox_$_modify_$_zhangxueguang_begin$_20120426_$*/
 //we add the state_store interface to allow userspace to control the switch state.
 static ssize_t state_store(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
 {
@@ -70,7 +68,6 @@ static ssize_t state_store(struct device *dev, struct device_attribute *attr, co
 
 static DEVICE_ATTR(state, S_IRUGO | S_IWUSR, state_show, state_store);
 static DEVICE_ATTR(name, S_IRUGO | S_IWUSR, name_show, NULL);
-/*$_rbox_$_modify_$_zhangxueguang_end$_20120426_$*/
 
 void switch_set_state(struct switch_dev *sdev, int state)
 {

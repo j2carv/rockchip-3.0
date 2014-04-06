@@ -66,15 +66,11 @@ enum _codec_pll {
 
 
 #ifdef CONFIG_RK29_VMAC
-    #if defined (CONFIG_RK29_VMAC_EXT_CLK)
-        #define RK30_CLOCKS_DEFAULT_FLAGS (CLK_FLG_MAX_I2S_12288KHZ/*|CLK_FLG_EXT_27MHZ*/)
-        #define periph_pll_default periph_pll_768mhz
-        #define codec_pll_default codec_pll_594mhz
-    #else
-        #define RK30_CLOCKS_DEFAULT_FLAGS (CLK_FLG_MAX_I2S_12288KHZ/*|CLK_FLG_EXT_27MHZ*/)
-        #define periph_pll_default periph_pll_300mhz
-        #define codec_pll_default codec_pll_594mhz
-    #endif
+
+#define RK30_CLOCKS_DEFAULT_FLAGS (CLK_FLG_MAX_I2S_12288KHZ/*|CLK_FLG_EXT_27MHZ*/)
+#define periph_pll_default periph_pll_300mhz
+#define codec_pll_default periph_pll_594mhz//codec_pll_1188mhz
+
 #else
 
 
